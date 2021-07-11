@@ -30,10 +30,8 @@ if(isset($_GET['type'])){
 				$stuff["rango"] = $row['rango'];
 				array_push($response["set"], $stuff);
 
-					// $response[] = $row;
 				}
-					// success
-				//$response["success"] = 1;
+					
 				echo(json_encode($response));
 			
 			}else{
@@ -47,70 +45,48 @@ if(isset($_GET['type'])){
 			}
 			break; 
 	
-		case 'register':
-		$username = $_POST['username'];
-		$password = $_POST['password']; 			
-		
-		//$username = $_GET['username'];
-		//$password = $_GET['password']; 			
-			$stmt = $con->prepare("SELECT id, username, email, phone FROM users WHERE username = ? AND password = ?");
-			$stmt->bind_param("ss",$username, $password);			
-			$stmt->execute();
-			$stmt->store_result();
+		case '1':
+			$cedula = $_GET['cedula'];			
+			$result = $conexion->query( "SELECT * FROM ciudadanos WHERE cedula = '$cedula';" );
 			
-			if($stmt->num_rows <=0){
-				//$stmt->bind_result( $username);
-				//$stmt2 = $con->prepare("insert into users (username, password) values ( ? , ?");
-				$q= "insert into users (username, password) values ( '$username' , '$password')";
-				//echo $q;
-				$stmt2 = $con->prepare($q);
-				//$stmt2->bind_param("ss",$username, $password);			
-				$stmt2->execute();
-				$stmt2->store_result();
-					
+			 
+			if($result->num_rows === 1){
+				while($row = $result->fetch_assoc())    {
+
+				$stuff= array();
+
+				/* ADD THE TABLE COLUMNS TO THE JSON OBJECT CONTENTS */
 				
-				$stmt2->fetch();
-				$user = array(
-					'error'=>false,
-					'message'=>'Registro de Usuario Correcto',
-					 'username'=>$username
+				$stuff["cedula"] = $row['cedula'];
+				$stuff["nombre"] = $row['nombre'];
+				$stuff["apellido"] = $row['apellido'];
+				$stuff["direccion"] = $row['direccion'];
+				array_push($response["set"], $stuff);
+
 					
-				);
-				//array_push($data, $user);
-				echo json_encode($user);
-				//$response['error'] = false; 
-				//$response['message'] = 'Login successful'; 
-				//$response['user'] = $user; 
-				//print_r ($user);
+				}
+			
+				echo(json_encode($response));
+			
 			}else{
-				//$response['error'] = false; 
-				//$response['message'] = 'Invalid username or password';
+				
 				$user = array(
 					'error'=>true,
-					'message'=>'Registro Incorrecto.. Usuario Existe',
-					'id'=>'', 
-					'username'=>'', 
-					'email'=>'',
-					'phone'=>''
+					'message'=>'Usuario no encontrado',
+					
 				);
-				echo json_encode($user);
+				echo json_encode("Error".$user);
 			}
-		break; 
-            
-		break;
+			break; 
+          
 		default: 
 			$response['error'] = true; 
 			$response['message'] = 'Invalid Operation Called';
+			break;
 		}
-	}
-	else{
+		
+	}else{
 		$response['error'] = true; 
 		$response['message'] = 'Invalid API Call';
 	}
-
-
-
-
-
-
 ?>
