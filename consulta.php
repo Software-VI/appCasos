@@ -91,7 +91,7 @@ if(isset($_GET['type'])){
 	
 					/* ADD THE TABLE COLUMNS TO THE JSON OBJECT CONTENTS */
 					
-					$stuff["cod_tipo_reporte"] = $row['cod_tipo_reporte'];
+			
 					$stuff["descripcion"] = $row['descripcion'];
 					array_push($response["set"], $stuff);
 	
@@ -110,6 +110,41 @@ if(isset($_GET['type'])){
 					echo json_encode("Error".$user);
 				}
 				break; 
+
+				case '3':
+					$cod_reporte = $_GET['cod_reporte'];			
+					$result = $conexion->query( "SELECT * FROM reporte WHERE cod_reporte = '$cod_reporte';" );
+					
+					 
+					if($result->num_rows === 1){
+						while($row = $result->fetch_assoc())    {
+		
+						$stuff= array();
+		
+						/* ADD THE TABLE COLUMNS TO THE JSON OBJECT CONTENTS */
+						
+						$stuff["cedula"] = $row['cedula'];
+						$stuff["fecha"] = $row['fecha'];
+						$stuff["tipo_reporte"] = $row['tipo_reporte'];
+						$stuff["observacion"] = $row['observacion'];
+						$stuff["activo"] = $row['activo'];
+
+						array_push($response["set"], $stuff);
+							
+						}
+					
+						echo(json_encode($response));
+					
+					}else{
+						
+						$user = array(
+							'error'=>true,
+							'message'=>'Reporte no encontrado',
+							
+						);
+						echo json_encode("Error".$user);
+					}
+					break; 
 
 		default: 
 			$response['error'] = true; 
