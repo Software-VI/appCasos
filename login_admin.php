@@ -8,19 +8,19 @@
 
     $conexion = mysqli_connect($host, $user, $password, $BD);
 
-    $consulta = "select * from administrador where cod_seguridad = MD5('$cod_seguridad')";
+    $consulta = "select * from administrador where password = MD5('$cod_seguridad')";
     
     $response = mysqli_query($conexion, $consulta);
 
-    if(mysqli_num_rows($response)===1){
+    if(mysqli_num_rows($response)){
 			
 			$row = mysqli_fetch_assoc($response);
 			
-			if(md5($cod_seguridad) === $row['cod_seguridad']){
+			if(md5($cod_seguridad) === $row['password']){
 				
 				$resultado['success'] = "1";
 				$resultado['message'] = "success";
-				
+				$resultado['content'] = $row['password'];
 				mysqli_close($conexion);
 				echo json_encode($resultado);
 				
