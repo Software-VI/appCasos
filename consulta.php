@@ -79,10 +79,43 @@ if(isset($_GET['type'])){
 			}
 			break; 
           
+			case '2':
+				$cod_tipo_reporte = $_GET['cod_tipo_reporte'];			
+    		$result = $conexion->query( "SELECT * FROM tipo_reporte WHERE cod_tipo_reporte = '$cod_tipo_reporte';" );
+ 
+				 
+				if($result->num_rows === 1){
+					while($row = $result->fetch_assoc())    {
+	
+					$stuff= array();
+	
+					/* ADD THE TABLE COLUMNS TO THE JSON OBJECT CONTENTS */
+					
+					$stuff["cod_tipo_reporte"] = $row['cod_tipo_reporte'];
+					$stuff["descripcion"] = $row['descripcion'];
+					array_push($response["set"], $stuff);
+	
+						
+					}
+				
+					echo(json_encode($response));
+				
+				}else{
+					
+					$user = array(
+						'error'=>true,
+						'message'=>'Tipo de Reporte no encontrado',
+						
+					);
+					echo json_encode("Error".$user);
+				}
+				break; 
+
 		default: 
 			$response['error'] = true; 
 			$response['message'] = 'Invalid Operation Called';
 			break;
+		
 		}
 		
 	}else{
